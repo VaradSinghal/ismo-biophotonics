@@ -18,7 +18,7 @@ import { deviceRoutes } from './modules/device/device.routes';
 import { internalRoutes } from './modules/internal/internal.routes';
 import { setupOpenAPI } from './config/openapi';
 
-export function createApp() {
+export function createApp(): express.Express {
   const app = express();
 
   app.set('trust proxy', env.TRUST_PROXY);

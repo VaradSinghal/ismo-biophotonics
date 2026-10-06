@@ -1,6 +1,6 @@
-import { AppShell, Burger, Group, Title, Button, Text } from '@mantine/core';
+import { AppShell, Burger, Group, Title, Button, Text, NavLink } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Outlet, useNavigate, Link } from 'react-router-dom';
+import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LogOut, LayoutDashboard, FolderKanban, CheckSquare, Settings } from 'lucide-react';
 import { useEffect } from 'react';
@@ -9,6 +9,7 @@ import { api } from '../api';
 export function Layout() {
   const [opened, { toggle }] = useDisclosure();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
 
   const { data: user, isLoading, isError } = useQuery({
@@ -51,7 +52,7 @@ export function Layout() {
         <Group h="100%" px="md" justify="space-between">
           <Group>
             <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-            <Title order={3} c="indigo">ProjectFlow</Title>
+            <Title order={3} c="terracotta">ProjectFlow</Title>
           </Group>
           <Group>
             <Text size="sm" fw={500}>{user?.fullName}</Text>
@@ -63,23 +64,15 @@ export function Layout() {
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
-        <Button component={Link} to="/dashboard" variant="subtle" justify="flex-start" fullWidth leftSection={<LayoutDashboard size={20} />} mb="sm">
-          Dashboard
-        </Button>
-        <Button component={Link} to="/projects" variant="subtle" justify="flex-start" fullWidth leftSection={<FolderKanban size={20} />} mb="sm">
-          Projects
-        </Button>
-        <Button component={Link} to="/tasks" variant="subtle" justify="flex-start" fullWidth leftSection={<CheckSquare size={20} />} mb="sm">
-          Tasks
-        </Button>
+        <NavLink component={Link} to="/dashboard" label="Dashboard" leftSection={<LayoutDashboard size={20} />} active={location.pathname === '/dashboard'} variant="filled" color="terracotta" style={{ borderRadius: 8, marginBottom: 8 }} />
+        <NavLink component={Link} to="/projects" label="Projects" leftSection={<FolderKanban size={20} />} active={location.pathname === '/projects'} variant="filled" color="terracotta" style={{ borderRadius: 8, marginBottom: 8 }} />
+        <NavLink component={Link} to="/tasks" label="Tasks" leftSection={<CheckSquare size={20} />} active={location.pathname === '/tasks'} variant="filled" color="terracotta" style={{ borderRadius: 8, marginBottom: 8 }} />
         {user?.role === 'ADMIN' && (
-          <Button component={Link} to="/admin" variant="subtle" justify="flex-start" fullWidth leftSection={<Settings size={20} />} mt="auto">
-            Admin Panel
-          </Button>
+          <NavLink component={Link} to="/admin" label="Admin Panel" leftSection={<Settings size={20} />} active={location.pathname === '/admin'} variant="filled" color="terracotta" style={{ borderRadius: 8, marginTop: 'auto' }} />
         )}
       </AppShell.Navbar>
 
-      <AppShell.Main bg="gray.0">
+      <AppShell.Main>
         <Outlet />
       </AppShell.Main>
     </AppShell>

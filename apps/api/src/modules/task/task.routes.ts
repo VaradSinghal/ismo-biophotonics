@@ -4,7 +4,7 @@ import { authenticate } from '../../middleware/auth';
 import { validate } from '../../middleware/validate';
 import * as controller from './task.controller';
 
-export function taskRoutes() {
+export function taskRoutes(): Router {
   const router = Router();
 
   router.use(authenticate);

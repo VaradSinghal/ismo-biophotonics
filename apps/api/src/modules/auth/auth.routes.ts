@@ -5,7 +5,7 @@ import type { createRateLimiters } from '../../middleware/rateLimit';
 import { validate } from '../../middleware/validate';
 import * as controller from './auth.controller';
 
-export function authRoutes(limiters: ReturnType<typeof createRateLimiters>) {
+export function authRoutes(limiters: ReturnType<typeof createRateLimiters>): Router {
   const router = Router();
 
   router.post('/register', limiters.authSensitive, validate({ body: registerSchema }), controller.register);

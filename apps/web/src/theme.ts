@@ -1,51 +1,67 @@
-import { createTheme, rem } from '@mantine/core';
+import { createTheme } from '@mantine/core';
 
 export const theme = createTheme({
-  primaryColor: 'indigo',
+  primaryColor: 'terracotta',
   defaultRadius: 'md',
-  fontFamily: 'Inter, system-ui, sans-serif',
+  fontFamily: '"Inter Tight", system-ui, sans-serif',
   headings: {
-    fontFamily: 'Outfit, system-ui, sans-serif',
-    fontWeight: '700',
+    fontFamily: '"Fraunces", serif',
+    fontWeight: '300',
+  },
+  colors: {
+    terracotta: [
+      '#fbf1ed',
+      '#f2dfd7',
+      '#e3baaa',
+      '#d5937a',
+      '#ca7351',
+      '#c25c35',
+      '#be5024',
+      '#a84018',
+      '#963813',
+      '#842d0b',
+    ],
   },
   components: {
-    Button: {
-      defaultProps: {
-        size: 'md',
-      },
+    AppShell: {
+      styles: {
+        main: {
+          backgroundColor: '#F3EDDF',
+        },
+        header: {
+          backgroundColor: '#F3EDDF',
+          borderColor: 'rgba(0,0,0,0.12)',
+        },
+        navbar: {
+          backgroundColor: '#F3EDDF',
+          borderColor: 'rgba(0,0,0,0.12)',
+        }
+      }
+    },
+    Paper: {
       styles: {
         root: {
-          transition: 'all 0.2s ease',
+          backgroundColor: '#FCF6F0',
+          borderColor: 'rgba(0,0,0,0.12)',
         },
       },
     },
-    Paper: {
-      defaultProps: {
-        shadow: 'sm',
-        p: 'md',
-      },
-    },
     Card: {
-      defaultProps: {
-        shadow: 'sm',
-        p: 'md',
-        radius: 'md',
+      styles: {
+        root: {
+          backgroundColor: '#FCF6F0',
+          borderColor: 'rgba(0,0,0,0.12)',
+        },
       },
     },
-  },
-  colors: {
-    // Custom vibrant indigo palette
-    indigo: [
-      '#eef2ff',
-      '#e0e7ff',
-      '#c7d2fe',
-      '#a5b4fc',
-      '#818cf8',
-      '#6366f1',
-      '#4f46e5',
-      '#4338ca',
-      '#3730a3',
-      '#312e81',
-    ],
+    Input: {
+      styles: {
+        input: {
+          backgroundColor: 'rgba(0,0,0,0.04)',
+          borderColor: 'rgba(0,0,0,0.12)',
+          borderRadius: '14px',
+        }
+      }
+    }
   },
 });

@@ -4,7 +4,7 @@ import { authenticate } from '../../middleware/auth';
 import { validate } from '../../middleware/validate';
 import * as controller from './project.controller';
 
-export function projectRoutes() {
+export function projectRoutes(): Router {
   const router = Router();
 
   router.use(authenticate);
