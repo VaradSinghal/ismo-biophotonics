@@ -1,0 +1,24 @@
+{
+  "name": "biophonics",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Project Management System: Express API, React web app and Flutter mobile app sharing one backend",
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build:shared": "pnpm --filter @biophonics/shared build",
+    "build": "pnpm -r build",
+    "dev:api": "pnpm --filter @biophonics/api dev",
+    "dev:web": "pnpm --filter @biophonics/web dev",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md,css,yml,yaml}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  }
+}

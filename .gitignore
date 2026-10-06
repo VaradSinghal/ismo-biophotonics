@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Env (never commit secrets)
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Vercel
+.vercel
+
+# Firebase / service accounts
+**/firebase-service-account*.json
+**/serviceAccount*.json
