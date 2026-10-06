@@ -25,7 +25,7 @@ const projectFields = {
 type DateRange = { startDate?: string | null; endDate?: string | null };
 
 /** Adds the `endDate >= startDate` rule (only when both are present in the payload). */
-const withDateRangeRule = <T extends z.ZodType<DateRange, z.ZodTypeDef, unknown>>(schema: T) =>
+const withDateRangeRule = <T extends z.ZodTypeAny>(schema: T) =>
   schema.superRefine((value, ctx) => {
     if (value.startDate && value.endDate && !isDateOnOrAfter(value.endDate, value.startDate)) {
       ctx.addIssue({

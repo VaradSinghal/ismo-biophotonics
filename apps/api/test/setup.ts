@@ -1,7 +1,7 @@
 import { beforeAll, afterAll, afterEach } from 'vitest';
-import { loadEnvFile } from 'node:process';
+import dotenv from 'dotenv';
 
-loadEnvFile('.env.test');
+dotenv.config({ path: '.env.test' });
 
 import { prisma } from '../src/lib/prisma';
 

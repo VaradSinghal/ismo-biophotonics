@@ -81,7 +81,8 @@ export async function sendDueTomorrowNotifications() {
       // Check for invalid tokens to clean up
       result.responses.forEach((resp, idx) => {
         if (!resp.success && resp.error?.code === 'messaging/registration-token-not-registered') {
-          deleteTokens.push(messages[idx]!.token);
+          const msg = messages[idx] as admin.messaging.TokenMessage;
+          if (msg.token) deleteTokens.push(msg.token);
         } else if (resp.success) {
           sent++;
         }
