@@ -17,6 +17,11 @@ import { adminRoutes } from './modules/admin/admin.routes';
 import { deviceRoutes } from './modules/device/device.routes';
 import { internalRoutes } from './modules/internal/internal.routes';
 import { setupOpenAPI } from './config/openapi';
+import { initFirebaseAdmin } from './config/firebase';
+import { initCronJobs } from './cron/notification.cron';
+
+initFirebaseAdmin();
+initCronJobs();
 
 export function createApp(): express.Express {
   const app = express();

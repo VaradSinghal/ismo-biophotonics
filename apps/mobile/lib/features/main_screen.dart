@@ -5,6 +5,7 @@ import 'package:mobile/features/projects/screens/projects_view.dart';
 import 'package:mobile/features/tasks/screens/tasks_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/features/auth/auth_provider.dart';
+import 'package:mobile/core/network/offline_helper.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -23,10 +24,29 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isOffline = ref.watch(isOfflineProvider);
+    
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _views,
+      body: Column(
+        children: [
+          if (isOffline)
+            Container(
+              width: double.infinity,
+              color: Colors.redAccent,
+              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 8, bottom: 8),
+              child: const Text(
+                'Offline Mode - Viewing Cached Data',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+            ),
+          Expanded(
+            child: IndexedStack(
+              index: _currentIndex,
+              children: _views,
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,

@@ -4,10 +4,11 @@ import 'package:mobile/core/network/dio_client.dart';
 import 'package:mobile/theme/tw_theme.dart';
 import 'package:mobile/helpers/responsive.dart';
 
+import 'package:mobile/core/network/offline_helper.dart';
+
 final dashboardProvider = FutureProvider.autoDispose((ref) async {
   final dio = ref.watch(dioProvider);
-  final res = await dio.get('/dashboard');
-  return res.data['data'];
+  return fetchWithOfflineCache(ref, () => dio.get('/dashboard'), 'dashboard');
 });
 
 class DashboardView extends ConsumerWidget {

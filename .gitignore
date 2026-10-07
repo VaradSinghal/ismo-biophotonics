@@ -32,3 +32,5 @@ Thumbs.db
 # Firebase / service accounts
 **/firebase-service-account*.json
 **/serviceAccount*.json
+
+FIREBASE_SERVICE_ACCOUNT.json
