@@ -13,6 +13,8 @@ export function TaskList() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [projectId, setProjectId] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const [priority, setPriority] = useState<string | null>(null);
   const [opened, { open, close }] = useDisclosure(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -25,9 +27,9 @@ export function TaskList() {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ['tasks', page, search, projectId],
+    queryKey: ['tasks', page, search, projectId, status, priority],
     queryFn: async () => {
-      const res = await api.get('/tasks', { params: { page, search, projectId } });
+      const res = await api.get('/tasks', { params: { page, search, projectId, status, priority } });
       return res.data;
     },
   });
@@ -100,10 +102,24 @@ export function TaskList() {
           onChange={(e) => setSearch(e.currentTarget.value)}
         />
         <Select
-          placeholder="Filter by Project"
+          placeholder="Project"
           data={projectsData?.data.map((p: any) => ({ value: p.id, label: p.name })) || []}
           value={projectId}
-          onChange={(val) => setProjectId(val ?? '')}
+          onChange={(val) => setProjectId(val ?? null)}
+          clearable
+        />
+        <Select
+          placeholder="Status"
+          data={TASK_STATUSES.map(s => ({ value: s, label: s.replace('_', ' ') }))}
+          value={status}
+          onChange={(val) => setStatus(val ?? null)}
+          clearable
+        />
+        <Select
+          placeholder="Priority"
+          data={TASK_PRIORITIES.map(s => ({ value: s, label: s }))}
+          value={priority}
+          onChange={(val) => setPriority(val ?? null)}
           clearable
         />
       </Group>

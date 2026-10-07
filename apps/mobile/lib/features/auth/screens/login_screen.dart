@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../auth_provider.dart';
 import 'package:mobile/theme/tw_theme.dart';
 import 'package:mobile/helpers/responsive.dart';
@@ -71,7 +72,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               if (authState.hasError) ...[
                 SizedBox(height: Responsive.hp(16)),
                 Text('Authentication failed. Please check your credentials.', textAlign: TextAlign.center, style: interTight(size: 14, color: Colors.red)),
-              ]
+              ],
+              SizedBox(height: Responsive.hp(16)),
+              TextButton(
+                onPressed: () => context.push('/register'),
+                child: Text("Don't have an account? Sign up", style: interTight(size: 14, color: TwColors.terracotta)),
+              ),
             ],
           ),
         ),

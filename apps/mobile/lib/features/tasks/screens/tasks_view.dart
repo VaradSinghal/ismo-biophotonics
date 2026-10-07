@@ -6,9 +6,23 @@ import 'package:mobile/theme/tw_theme.dart';
 import 'package:mobile/helpers/responsive.dart';
 import 'package:mobile/features/dashboard/screens/dashboard_view.dart';
 
+final taskSearchProvider = StateProvider<String>((ref) => '');
+final taskStatusProvider = StateProvider<String?>((ref) => null);
+final taskPriorityProvider = StateProvider<String?>((ref) => null);
+
 final tasksProvider = FutureProvider.autoDispose((ref) async {
   final dio = ref.watch(dioProvider);
-  return fetchWithOfflineCache(ref, () => dio.get('/tasks'), 'tasks');
+  final search = ref.watch(taskSearchProvider);
+  final status = ref.watch(taskStatusProvider);
+  final priority = ref.watch(taskPriorityProvider);
+  
+  final queryParams = <String, String>{};
+  if (search.isNotEmpty) queryParams['search'] = search;
+  if (status != null && status.isNotEmpty) queryParams['status'] = status;
+  if (priority != null && priority.isNotEmpty) queryParams['priority'] = priority;
+
+  final cacheKey = 'tasks_${search}_${status}_$priority';
+  return fetchWithOfflineCache(ref, () => dio.get('/tasks', queryParameters: queryParams), cacheKey);
 });
 
 class TaskMutator {
@@ -48,62 +62,114 @@ class TasksView extends ConsumerWidget {
         backgroundColor: TwColors.terracotta,
         child: const Icon(Icons.add, color: TwColors.cream),
       ),
-      body: RefreshIndicator(
-        onRefresh: () => ref.refresh(tasksProvider.future),
-        child: state.when(
-          loading: () => const Center(child: CircularProgressIndicator(color: TwColors.terracotta)),
-          error: (err, st) => ListView(children: [Center(child: Text('Error: $err'))]),
-          data: (data) {
-            final List tasks = data as List;
-            if (tasks.isEmpty) return const Center(child: Text('No tasks found.'));
-            return ListView.builder(
-              padding: EdgeInsets.all(Responsive.wp(16)),
-              itemCount: tasks.length,
-              itemBuilder: (context, i) {
-                final t = tasks[i];
-                return Card(
-                  margin: EdgeInsets.only(bottom: Responsive.hp(12)),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: const BorderSide(color: TwColors.line),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(Responsive.wp(16)),
+            child: Column(
+              children: [
+                TextField(
+                  onChanged: (val) => ref.read(taskSearchProvider.notifier).state = val,
+                  decoration: const InputDecoration(
+                    hintText: 'Search tasks...',
+                    prefixIcon: Icon(Icons.search),
                   ),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(Responsive.wp(16)),
-                    title: Text(t['name'], style: interTight(size: 16, weight: FontWeight.w600)),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: Responsive.hp(4)),
-                        Text(t['description'] ?? '', style: interTight(size: 14, color: TwColors.creamDim)),
-                        SizedBox(height: Responsive.hp(8)),
-                        Row(
-                          children: [
-                            Chip(
-                              label: Text(t['status'], style: const TextStyle(fontSize: 10)),
-                              backgroundColor: TwColors.ink2,
-                              side: BorderSide.none,
-                            ),
-                            const SizedBox(width: 8),
-                            Chip(
-                              label: Text(t['priority'], style: const TextStyle(fontSize: 10)),
-                              backgroundColor: TwColors.ink2,
-                              side: BorderSide.none,
-                            ),
-                          ],
-                        )
-                      ],
+                ),
+                SizedBox(height: Responsive.hp(8)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String?>(
+                        value: ref.watch(taskStatusProvider),
+                        decoration: const InputDecoration(hintText: 'Status'),
+                        items: const [
+                          DropdownMenuItem(value: null, child: Text('All')),
+                          DropdownMenuItem(value: 'PENDING', child: Text('Pending')),
+                          DropdownMenuItem(value: 'IN_PROGRESS', child: Text('In Progress')),
+                          DropdownMenuItem(value: 'COMPLETED', child: Text('Completed')),
+                        ],
+                        onChanged: (val) => ref.read(taskStatusProvider.notifier).state = val,
+                      ),
                     ),
-                    trailing: isOffline ? null : IconButton(
-                      icon: const Icon(Icons.edit, size: 20, color: TwColors.mute),
-                      onPressed: () => _showTaskDialog(context, ref, t),
+                    SizedBox(width: Responsive.wp(8)),
+                    Expanded(
+                      child: DropdownButtonFormField<String?>(
+                        value: ref.watch(taskPriorityProvider),
+                        decoration: const InputDecoration(hintText: 'Priority'),
+                        items: const [
+                          DropdownMenuItem(value: null, child: Text('All')),
+                          DropdownMenuItem(value: 'LOW', child: Text('Low')),
+                          DropdownMenuItem(value: 'MEDIUM', child: Text('Medium')),
+                          DropdownMenuItem(value: 'HIGH', child: Text('High')),
+                        ],
+                        onChanged: (val) => ref.read(taskPriorityProvider.notifier).state = val,
+                      ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () => ref.refresh(tasksProvider.future),
+              child: state.when(
+                loading: () => const Center(child: CircularProgressIndicator(color: TwColors.terracotta)),
+                error: (err, st) => ListView(children: [Center(child: Text('Error: $err'))]),
+                data: (data) {
+                  final List tasks = data as List;
+                  if (tasks.isEmpty) return const Center(child: Text('No tasks found.'));
+                  return ListView.builder(
+                    padding: EdgeInsets.all(Responsive.wp(16)),
+                    itemCount: tasks.length,
+                    itemBuilder: (context, i) {
+                      final t = tasks[i];
+                      return Card(
+                        margin: EdgeInsets.only(bottom: Responsive.hp(12)),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: const BorderSide(color: TwColors.line),
+                        ),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(Responsive.wp(16)),
+                          title: Text(t['name'], style: interTight(size: 16, weight: FontWeight.w600)),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: Responsive.hp(4)),
+                              Text(t['description'] ?? '', style: interTight(size: 14, color: TwColors.creamDim)),
+                              SizedBox(height: Responsive.hp(8)),
+                              Row(
+                                children: [
+                                  Chip(
+                                    label: Text(t['status'], style: const TextStyle(fontSize: 10)),
+                                    backgroundColor: TwColors.ink2,
+                                    side: BorderSide.none,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Chip(
+                                    label: Text(t['priority'], style: const TextStyle(fontSize: 10)),
+                                    backgroundColor: TwColors.ink2,
+                                    side: BorderSide.none,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          trailing: isOffline ? null : IconButton(
+                            icon: const Icon(Icons.edit, size: 20, color: TwColors.mute),
+                            onPressed: () => _showTaskDialog(context, ref, t),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -150,6 +216,7 @@ class _TaskDialogState extends State<_TaskDialog> {
     try {
       final dio = widget.ref.read(dioProvider);
       final res = await dio.get('/projects');
+      if (!mounted) return;
       setState(() {
         _projects = res.data['data'];
         if (_projectId == null && _projects.isNotEmpty) {

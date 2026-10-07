@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'features/auth/auth_provider.dart';
 import 'features/auth/screens/login_screen.dart';
+import 'features/auth/screens/register_screen.dart';
 import 'features/main_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -14,9 +15,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       
       final loggedIn = authState.value == true;
       final goingToLogin = state.uri.toString() == '/login';
+      final goingToRegister = state.uri.toString() == '/register';
 
-      if (!loggedIn && !goingToLogin) return '/login';
-      if (loggedIn && goingToLogin) return '/';
+      if (!loggedIn && !goingToLogin && !goingToRegister) return '/login';
+      if (loggedIn && (goingToLogin || goingToRegister)) return '/';
       
       return null;
     },
@@ -24,6 +26,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
         path: '/',
