@@ -19,6 +19,9 @@ This project is a `pnpm` monorepo containing three core applications:
 - **RBAC**: Multi-role system (`USER`, `ADMIN`). Admins have access to system-wide metrics and audit logs.
 - **Security**: Granular ownership checks (IDOR protection), SQL-injection safe (Prisma parameterized queries), bcrypt password hashing, and API rate limiting.
 
+- **[Database Schema & ER Diagram](./DATABASE_SCHEMA.md)**
+- **[REST API Documentation](./API_DOCS.md)**
+
 ---
 
 ## 1. Database Setup
@@ -41,7 +44,7 @@ Create `.env` files based on the `.env.example` templates in each app.
 
 ### Backend (`apps/api/.env`)
 ```env
-PORT=3000
+PORT=4000
 DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:5432/biophonics?schema=public"
 JWT_SECRET="super-secret-key-change-in-prod"
 TRUST_PROXY=1
@@ -50,7 +53,7 @@ CRON_SECRET="your-cron-secret-for-notifications"
 
 ### Web (`apps/web/.env`)
 ```env
-VITE_API_URL="http://localhost:3000/api"
+VITE_API_URL="http://localhost:4000/api"
 ```
 
 ---
@@ -63,7 +66,7 @@ From the root of the monorepo, run:
 # 1. Install dependencies for the monorepo (API, Web, and Shared)
 pnpm install
 
-# 2. Start the Backend API (runs on port 3000)
+# 2. Start the Backend API (runs on port 4000)
 pnpm run dev:api
 
 # 3. Start the Web App (runs on port 5173)
@@ -71,7 +74,7 @@ pnpm run dev:web
 ```
 
 - **Web App**: Accessible at `http://localhost:5173`
-- **Swagger API Docs**: Accessible at `http://localhost:3000/api/docs`
+- **Swagger API Docs**: Accessible at `http://localhost:4000/api/docs`
 
 ---
 
@@ -88,7 +91,7 @@ flutter pub get
 
 # 3. Run the application
 # Point it to your local backend API using dart-define
-flutter run --dart-define=API_BASE_URL=http://10.0.2.2:3000/api
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:4000/api
 ```
 
 ### Pointing the Mobile App at a Deployed Backend
@@ -101,49 +104,7 @@ flutter build apk --release --dart-define=API_BASE_URL=https://your-production-a
 
 ---
 
-## 5. ER Diagram
-
-The database schema is highly normalized.
-
-```mermaid
-erDiagram
-  User ||--o{ Project : owns
-  User ||--o{ RefreshToken : has
-  User ||--o{ DeviceToken : registers
-  User ||--o{ AuditLog : performs
-  Project ||--o{ Task : contains
-
-  User {
-    uuid id PK
-    string fullName
-    string email UK
-    string passwordHash
-    enum role "USER | ADMIN"
-    timestamp createdAt
-  }
-  Project {
-    uuid id PK
-    uuid userId FK
-    string name
-    text description
-    enum status
-    date startDate
-    date endDate
-  }
-  Task {
-    uuid id PK
-    uuid projectId FK
-    string name
-    text description
-    enum priority
-    enum status
-    date dueDate
-  }
-```
-
----
-
-## 6. Deployment (Submission Info)
+## 5. Deployment (Submission Info)
 
 - **Deployed Web URL**: `(Insert Vercel URL)`
 - **Deployed API URL**: `(Insert Render URL)`
