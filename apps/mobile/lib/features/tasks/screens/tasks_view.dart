@@ -200,6 +200,7 @@ class _TaskDialogState extends State<_TaskDialog> {
           TextButton(
             onPressed: () async {
               await widget.ref.read(taskMutatorProvider).deleteTask(widget.task!['id']);
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
@@ -208,18 +209,19 @@ class _TaskDialogState extends State<_TaskDialog> {
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: TwColors.terracotta, foregroundColor: Colors.white),
           onPressed: () async {
-            final data = {
+            final Map<String, dynamic> data = {
               'name': _name.text,
               'description': _desc.text,
               'status': _status,
               'priority': _priority,
             };
             if (widget.task == null) {
-              if (_projectId != null) data['projectId'] = _projectId;
+              if (_projectId != null) data['projectId'] = _projectId!;
               await widget.ref.read(taskMutatorProvider).createTask(data);
             } else {
               await widget.ref.read(taskMutatorProvider).updateTask(widget.task!['id'], data);
             }
+            if (!context.mounted) return;
             Navigator.pop(context);
           },
           child: const Text('Save'),
