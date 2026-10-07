@@ -29,10 +29,10 @@ class DashboardView extends ConsumerWidget {
             return ListView(
               padding: EdgeInsets.all(Responsive.wp(16)),
               children: [
-                _buildStatCard('Total Projects', data['projects'].toString(), Icons.folder),
-                _buildStatCard('Total Tasks', data['tasks'].toString(), Icons.task),
-                _buildStatCard('Completed Tasks', data['completedTasks'].toString(), Icons.check_circle, TwColors.trustGreen),
-                _buildStatCard('Pending Tasks', data['pendingTasks'].toString(), Icons.pending_actions),
+                _buildStatCard('Total Projects', (data['projects'] ?? 0).toString(), Icons.folder),
+                _buildStatCard('Total Tasks', (data['tasks'] ?? 0).toString(), Icons.task),
+                _buildStatCard('Completed Tasks', (data['completedTasks'] ?? 0).toString(), Icons.check_circle, TwColors.trustGreen),
+                _buildStatCard('Pending Tasks', (data['pendingTasks'] ?? 0).toString(), Icons.pending_actions),
               ],
             );
           },
