@@ -106,7 +106,7 @@ flutter build apk --release --dart-define=API_BASE_URL=https://your-production-a
 
 ## 5. Deployment (Submission Info)
 
-- **Deployed Web URL**: `(Insert Vercel URL)`
-- **Deployed API URL**: `(Insert Render URL)`
+- **Deployed Web URL**: [https://ismo-biophotonics.vercel.app/](https://ismo-biophotonics.vercel.app/)
+- **Deployed API URL**: [https://ismo-biophotonics.onrender.com](https://ismo-biophotonics.onrender.com)
 - **Android APK**: Download the latest release from the `Releases` tab on GitHub.
-- **Video Walkthrough**: `(Insert link to 5-minute screen recording)`
+- **Video Walkthrough**: [Watch the 5-Minute Demo](https://drive.google.com/file/d/1XblHX4wkS7FJZg2v2rqJqbD75yduca2L/view?usp=drive_link)
