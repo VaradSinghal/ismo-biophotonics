@@ -9,6 +9,19 @@ export const api = axios.create({
   },
 });
 
+let currentAccessToken: string | null = null;
+
+export const setAccessToken = (token: string | null) => {
+  currentAccessToken = token;
+};
+
+api.interceptors.request.use((config) => {
+  if (currentAccessToken) {
+    config.headers.Authorization = `Bearer ${currentAccessToken}`;
+  }
+  return config;
+});
+
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (value?: unknown) => void;
@@ -30,22 +43,29 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== '/auth/refresh') {
+    if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== '/auth/refresh' && originalRequest.url !== '/auth/login' && originalRequest.url !== '/auth/register') {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then(() => api(originalRequest)).catch((err) => Promise.reject(err));
+        }).then((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return api(originalRequest);
+        }).catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
       isRefreshing = true;
 
       try {
-        await api.post('/auth/refresh');
-        processQueue(null, 'refreshed');
+        const res = await api.post('/auth/refresh');
+        const newToken = res.data.data.accessToken;
+        setAccessToken(newToken);
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        processQueue(null, newToken);
         return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
+        setAccessToken(null);
         // Dispatch event so layout can redirect to login
         window.dispatchEvent(new Event('auth:unauthorized'));
         return Promise.reject(err);

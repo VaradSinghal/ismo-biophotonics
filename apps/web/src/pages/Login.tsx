@@ -26,11 +26,13 @@ export function Login() {
   const onSubmit = async (values: typeof form.values) => {
     setLoading(true);
     try {
+      let response;
       if (isRegister) {
-        await api.post('/auth/register', values);
+        response = await api.post('/auth/register', values);
       } else {
-        await api.post('/auth/login', { email: values.email, password: values.password });
+        response = await api.post('/auth/login', { email: values.email, password: values.password });
       }
+      import('../api').then(({ setAccessToken }) => setAccessToken(response.data.data.accessToken));
       queryClient.invalidateQueries({ queryKey: ['me'] });
       navigate('/dashboard');
     } catch (err) {

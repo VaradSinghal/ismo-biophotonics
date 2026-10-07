@@ -1,14 +1,15 @@
-import * as admin from 'firebase-admin';
+import admin from 'firebase-admin';
 import path from 'path';
 import fs from 'fs';
 
-const serviceAccountPath = path.resolve(__dirname, '../../../FIREBASE_SERVICE_ACCOUNT.json');
+const serviceAccountPath = path.resolve(process.cwd(), '../../FIREBASE_SERVICE_ACCOUNT.json');
 
 export const initFirebaseAdmin = () => {
   if (fs.existsSync(serviceAccountPath)) {
     try {
+      const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
       admin.initializeApp({
-        credential: admin.credential.cert(require(serviceAccountPath)),
+        credential: admin.credential.cert(serviceAccount),
       });
       console.log('Firebase Admin initialized successfully.');
     } catch (error) {
