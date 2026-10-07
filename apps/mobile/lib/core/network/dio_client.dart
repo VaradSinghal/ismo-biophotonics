@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/core/storage/secure_storage.dart';
+import 'package:mobile/features/auth/auth_provider.dart';
+import 'package:mobile/main.dart';
+import 'package:flutter/material.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(BaseOptions(
@@ -51,8 +54,13 @@ final dioProvider = Provider<Dio>((ref) {
               return handler.resolve(retryRes);
             }
           } catch (e) {
-            await storage.clearTokens();
-            // In a real app we'd dispatch a logout event here
+            await ref.read(authProvider.notifier).sessionExpired();
+            scaffoldMessengerKey.currentState?.showSnackBar(
+              const SnackBar(
+                content: Text('Your session has expired. Please log in again.'),
+                backgroundColor: Colors.red,
+              ),
+            );
           }
         }
       }

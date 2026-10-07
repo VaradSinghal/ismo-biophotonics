@@ -46,6 +46,11 @@ class AuthNotifier extends AsyncNotifier<bool> {
     await ref.read(secureStorageHelperProvider).clearTokens();
     state = const AsyncValue.data(false);
   }
+
+  Future<void> sessionExpired() async {
+    await ref.read(secureStorageHelperProvider).clearTokens();
+    state = const AsyncValue.data(false);
+  }
 }
 
 final authProvider = AsyncNotifierProvider<AuthNotifier, bool>(() {
