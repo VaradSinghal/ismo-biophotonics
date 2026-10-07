@@ -109,7 +109,7 @@ export function ProjectList() {
                 </Group>
               </Group>
               <Text size="sm" c="dimmed" mb="md">{project.description || 'No description'}</Text>
-              <Group gap="xl" size="sm">
+              <Group gap="xl">
                 <Text><b>Completed Tasks:</b> {project.completedTaskCount}</Text>
                 {project.startDate && <Text><b>Start:</b> {project.startDate.split('T')[0]}</Text>}
                 {project.endDate && <Text><b>End:</b> {project.endDate.split('T')[0]}</Text>}

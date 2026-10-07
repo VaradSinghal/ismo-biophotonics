@@ -103,7 +103,7 @@ export function TaskList() {
           placeholder="Filter by Project"
           data={projectsData?.data.map((p: any) => ({ value: p.id, label: p.name })) || []}
           value={projectId}
-          onChange={setProjectId}
+          onChange={(val) => setProjectId(val ?? '')}
           clearable
         />
       </Group>
@@ -134,7 +134,7 @@ export function TaskList() {
                 </Group>
               </Group>
               <Text size="sm" c="dimmed" mb="md">{task.description || 'No description'}</Text>
-              <Group gap="xl" size="sm">
+              <Group gap="xl">
                 <Text><b>Project:</b> {projectsData?.data.find((p: any) => p.id === task.projectId)?.name || 'Unknown'}</Text>
                 {task.dueDate && <Text><b>Due:</b> {task.dueDate.split('T')[0]}</Text>}
               </Group>
