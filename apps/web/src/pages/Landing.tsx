@@ -67,9 +67,6 @@ export function Landing() {
             <Button component={Link} to="/login" size="xl" color="terracotta" radius="md">
               Start Building Free
             </Button>
-            <Button component={Link} to="/dashboard" size="xl" variant="default" radius="md">
-              View Demo Dashboard
-            </Button>
           </Group>
         </Stack>
       </Container>
