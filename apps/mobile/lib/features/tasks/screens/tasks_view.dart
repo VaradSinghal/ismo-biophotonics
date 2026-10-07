@@ -6,9 +6,26 @@ import 'package:mobile/theme/tw_theme.dart';
 import 'package:mobile/helpers/responsive.dart';
 import 'package:mobile/features/dashboard/screens/dashboard_view.dart';
 
-final taskSearchProvider = StateProvider<String>((ref) => '');
-final taskStatusProvider = StateProvider<String?>((ref) => null);
-final taskPriorityProvider = StateProvider<String?>((ref) => null);
+class TaskSearchNotifier extends Notifier<String> {
+  @override
+  String build() => '';
+  set state(String val) => super.state = val;
+}
+final taskSearchProvider = NotifierProvider<TaskSearchNotifier, String>(() => TaskSearchNotifier());
+
+class TaskStatusNotifier extends Notifier<String?> {
+  @override
+  String? build() => null;
+  set state(String? val) => super.state = val;
+}
+final taskStatusProvider = NotifierProvider<TaskStatusNotifier, String?>(() => TaskStatusNotifier());
+
+class TaskPriorityNotifier extends Notifier<String?> {
+  @override
+  String? build() => null;
+  set state(String? val) => super.state = val;
+}
+final taskPriorityProvider = NotifierProvider<TaskPriorityNotifier, String?>(() => TaskPriorityNotifier());
 
 final tasksProvider = FutureProvider.autoDispose((ref) async {
   final dio = ref.watch(dioProvider);
